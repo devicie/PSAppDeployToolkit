@@ -122,6 +122,21 @@ namespace PSADT.PortableExecutable
         }
 
         /// <summary>
+        /// Reads a null-terminated UTF-8 string from the current position.
+        /// </summary>
+        /// <param name="reader">The binary reader to read from.</param>
+        /// <returns>The read string.</returns>
+        internal static string ReadNullTerminatedUtf8String(BinaryReader reader)
+        {
+            List<byte> bytes = []; byte b;
+            while ((b = reader.ReadByte()) != 0)
+            {
+                bytes.Add(b);
+            }
+            return Encoding.UTF8.GetString([.. bytes]);
+        }
+
+        /// <summary>
         /// Reads a null-terminated ASCII string from the specified RVA.
         /// </summary>
         /// <param name="reader">The binary reader to read from.</param>

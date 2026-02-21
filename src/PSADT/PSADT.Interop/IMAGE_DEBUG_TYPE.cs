@@ -52,9 +52,85 @@
         IMAGE_DEBUG_TYPE_FIXUP = Windows.Win32.System.Diagnostics.Debug.IMAGE_DEBUG_TYPE.IMAGE_DEBUG_TYPE_FIXUP,
 
         /// <summary>
+        /// Represents OMAP (Optimized MAP) data for mapping from optimized addresses to source addresses.
+        /// </summary>
+        /// <remarks>Contains an array of OMAP structures used when code has been optimized and addresses
+        /// have been rearranged. Each entry maps an RVA to its original RVA.</remarks>
+        IMAGE_DEBUG_TYPE_OMAP_TO_SRC = 7,
+
+        /// <summary>
+        /// Represents OMAP (Optimized MAP) data for mapping from source addresses to optimized addresses.
+        /// </summary>
+        /// <remarks>Contains an array of OMAP structures used when code has been optimized and addresses
+        /// have been rearranged. Each entry maps an original RVA to its optimized RVA.</remarks>
+        IMAGE_DEBUG_TYPE_OMAP_FROM_SRC = 8,
+
+        /// <summary>
         /// Represents the Borland debug type in the Windows debugging system.
         /// </summary>
         /// <remarks>This value identifies debug information specific to Borland compilers.</remarks>
         IMAGE_DEBUG_TYPE_BORLAND = Windows.Win32.System.Diagnostics.Debug.IMAGE_DEBUG_TYPE.IMAGE_DEBUG_TYPE_BORLAND,
+
+        /// <summary>
+        /// Reserved for future use (also known as BBT - Branch Boundary Table).
+        /// </summary>
+        IMAGE_DEBUG_TYPE_BBT = 10,
+
+        /// <summary>
+        /// Contains a CLSID (Class ID) GUID.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_CLSID = 11,
+
+        /// <summary>
+        /// Contains Visual C++ feature information including compiler flags and counts.
+        /// </summary>
+        /// <remarks>Contains five uint values: PreVC11, C/C++, /GS, /sdl, and guardN counts.</remarks>
+        IMAGE_DEBUG_TYPE_VC_FEATURE = 12,
+
+        /// <summary>
+        /// Contains Profile Guided Optimization (POGO) information.
+        /// </summary>
+        /// <remarks>Contains a signature followed by POGO entries with RVA, size, and name for each section.</remarks>
+        IMAGE_DEBUG_TYPE_POGO = 13,
+
+        /// <summary>
+        /// Indicates Incremental Link Time Code Generation was used.
+        /// </summary>
+        /// <remarks>This is a marker type with no associated data.</remarks>
+        IMAGE_DEBUG_TYPE_ILTCG = 14,
+
+        /// <summary>
+        /// Contains Intel Memory Protection Extensions (MPX) information.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_MPX = 15,
+
+        /// <summary>
+        /// Contains reproducible build hash information.
+        /// </summary>
+        /// <remarks>Contains a hash that can be used to verify reproducible builds.</remarks>
+        IMAGE_DEBUG_TYPE_REPRO = 16,
+
+        /// <summary>
+        /// Contains embedded portable PDB debug information.
+        /// </summary>
+        /// <remarks>The data contains a compressed portable PDB embedded directly in the PE file.</remarks>
+        IMAGE_DEBUG_TYPE_EMBEDDED_PORTABLE_PDB = 17,
+
+        /// <summary>
+        /// Contains Static Profile Guided Optimization (SPGO) information.
+        /// </summary>
+        IMAGE_DEBUG_TYPE_SPGO = 18,
+
+        /// <summary>
+        /// Contains the hash of the PDB file for verification.
+        /// </summary>
+        /// <remarks>Used to verify the PDB file matches the executable.</remarks>
+        IMAGE_DEBUG_TYPE_PDBCHECKSUM = 19,
+
+        /// <summary>
+        /// Contains extended DLL characteristics flags.
+        /// </summary>
+        /// <remarks>Contains additional DLL characteristics that don't fit in the standard header field.</remarks>
+        IMAGE_DEBUG_TYPE_EX_DLLCHARACTERISTICS = 20,
     }
 }

@@ -227,7 +227,8 @@ namespace PSADT.PortableExecutable
                 List<ImageDebugDirectory> parsed = new(count);
                 for (int i = 0; i < count; i++)
                 {
-                    parsed.Add(new(in PortableExecutableUtilities.ReadStruct<IMAGE_DEBUG_DIRECTORY>(reader)));
+                    ref readonly IMAGE_DEBUG_DIRECTORY dir = ref PortableExecutableUtilities.ReadStruct<IMAGE_DEBUG_DIRECTORY>(reader);
+                    parsed.Add(ImageDebugDirectory.Parse(reader, in dir, basePosition));
                 }
                 debug = new(parsed);
             }
