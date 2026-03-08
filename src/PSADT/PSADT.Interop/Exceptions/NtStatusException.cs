@@ -12,7 +12,6 @@ using PSADT.Interop.Utilities;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.System.Diagnostics.Debug;
-using Windows.Win32.System.LibraryLoader;
 
 namespace PSADT.Interop.Exceptions
 {
@@ -102,7 +101,7 @@ namespace PSADT.Interop.Exceptions
         /// <summary>
         /// Cached handle to ntdll.dll for FormatMessage calls.
         /// </summary>
-        private static readonly FreeLibrarySafeHandle NtDllHandle = NativeMethods.LoadLibraryEx("ntdll.dll", LOAD_LIBRARY_FLAGS.LOAD_LIBRARY_SEARCH_SYSTEM32);
+        private static readonly FreeLibrarySafeHandle NtDllHandle = NativeMethods.LoadLibraryEx("ntdll.dll", Windows.Win32.System.LibraryLoader.LOAD_LIBRARY_FLAGS.LOAD_LIBRARY_SEARCH_SYSTEM32);
 
         /// <summary>
         /// Provides a read-only mapping of NTSTATUS enumeration values to their corresponding field names.

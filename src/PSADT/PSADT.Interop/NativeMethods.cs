@@ -25,7 +25,6 @@ using Windows.Win32.Storage.FileSystem;
 using Windows.Win32.System.ApplicationInstallationAndServicing;
 using Windows.Win32.System.Diagnostics.Debug;
 using Windows.Win32.System.JobObjects;
-using Windows.Win32.System.LibraryLoader;
 using Windows.Win32.System.Power;
 using Windows.Win32.System.ProcessStatus;
 using Windows.Win32.System.Registry;
@@ -1341,7 +1340,7 @@ namespace PSADT.Interop
         /// path behavior and dependency resolution. The default is LOAD_LIBRARY_SEARCH_SYSTEM32, which restricts the search to the system directory.</param>
         /// <returns>A safe handle representing the loaded module. The caller is responsible for releasing the handle when it is
         /// no longer needed.</returns>
-        internal static FreeLibrarySafeHandle LoadLibraryEx(string lpLibFileName, LOAD_LIBRARY_FLAGS dwFlags = LOAD_LIBRARY_FLAGS.LOAD_LIBRARY_SEARCH_SYSTEM32)
+        internal static FreeLibrarySafeHandle LoadLibraryEx(string lpLibFileName, Windows.Win32.System.LibraryLoader.LOAD_LIBRARY_FLAGS dwFlags = Windows.Win32.System.LibraryLoader.LOAD_LIBRARY_FLAGS.LOAD_LIBRARY_SEARCH_SYSTEM32)
         {
             FreeLibrarySafeHandle res = PInvoke.LoadLibraryEx(lpLibFileName.ThrowIfFileDoesNotExist(), dwFlags);
             return res.IsInvalid ? throw ExceptionUtilities.GetExceptionForLastWin32Error() : res;
