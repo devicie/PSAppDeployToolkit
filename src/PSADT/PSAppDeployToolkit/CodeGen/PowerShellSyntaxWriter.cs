@@ -19,6 +19,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Management.Automation.Language;
 using System.Text;
 
@@ -31,9 +32,28 @@ namespace PSAppDeployToolkit.CodeGen
     /// <remarks>This class is designed to assist in emitting valid, human-readable PowerShell code fragments,
     /// such as for code generation or serialization scenarios. It manages indentation and escaping automatically to
     /// produce syntactically correct output.</remarks>
-    /// <param name="indentChars">The string used for each indentation level. Defaults to four spaces. Cannot be null.</param>
-    internal sealed class PowerShellSyntaxWriter(string indentChars = "    ")
+    internal sealed class PowerShellSyntaxWriter()
     {
+        /// <summary>
+        /// Initializes a new instance of the PowerShellSyntaxWriter class with the specified compression option.
+        /// </summary>
+        /// <param name="compress">true to enable output compression; otherwise, false.</param>
+        internal PowerShellSyntaxWriter(bool compress) : this()
+        {
+            _compress = compress;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the PowerShellSyntaxWriter class with the specified indentation characters.
+        /// </summary>
+        /// <param name="indentChars">The string of characters to use for indentation in the generated PowerShell syntax. Cannot be null or
+        /// whitespace.</param>
+        internal PowerShellSyntaxWriter(string indentChars) : this()
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(indentChars);
+            _indentChars = indentChars;
+        }
+
         /// <summary>
         /// Writes the opening token of a PowerShell hashtable literal (<c>@{</c>)
         /// or ordered dictionary literal (<c>[ordered]@{</c>) and increases the
@@ -46,6 +66,11 @@ namespace PSAppDeployToolkit.CodeGen
         {
             _ = _buffer.Append(ordered ? "[ordered]@{" : "@{");
             _depth++;
+            if (_compress)
+            {
+                _propertyWrittenStack.Push(_propertyWritten);
+                _propertyWritten = false;
+            }
         }
 
         /// <summary>
@@ -55,9 +80,17 @@ namespace PSAppDeployToolkit.CodeGen
         internal void WriteEndHashtable()
         {
             _depth--;
-            _ = _buffer.AppendLine();
-            WriteIndent();
-            _ = _buffer.Append('}');
+            if (_compress)
+            {
+                _ = _buffer.Append(" }");
+                _propertyWritten = _propertyWrittenStack.Pop();
+            }
+            else
+            {
+                _ = _buffer.AppendLine();
+                WriteIndent();
+                _ = _buffer.Append('}');
+            }
         }
 
         /// <summary>
@@ -68,8 +101,16 @@ namespace PSAppDeployToolkit.CodeGen
         internal void WritePropertyName(string name)
         {
             ArgumentNullException.ThrowIfNull(name);
-            _ = _buffer.AppendLine();
-            WriteIndent();
+            if (_compress)
+            {
+                _ = _buffer.Append(_propertyWritten ? "; " : " ");
+                _propertyWritten = true;
+            }
+            else
+            {
+                _ = _buffer.AppendLine();
+                WriteIndent();
+            }
             _ = _buffer.Append(name);
             _ = _buffer.Append(" = ");
         }
@@ -146,6 +187,8 @@ namespace PSAppDeployToolkit.CodeGen
         {
             _ = _buffer.Clear();
             _depth = 0;
+            _propertyWritten = false;
+            _propertyWrittenStack.Clear();
         }
 
         /// <summary>
@@ -177,12 +220,22 @@ namespace PSAppDeployToolkit.CodeGen
         private int _depth;
 
         /// <summary>
+        /// Tracks whether a property has been written at the current hashtable depth (compressed mode).
+        /// </summary>
+        private bool _propertyWritten;
+
+        /// <summary>
+        /// When <see langword="true"/>, hashtables are emitted on a single line with semicolons.
+        /// </summary>
+        private readonly bool _compress;
+
+        /// <summary>
         /// Stores the string used for indentation in formatted output.
         /// </summary>
         /// <remarks>This field is initialized with the value provided to the constructor and cannot be
         /// null. It is typically used to control the appearance of indented text, such as in pretty-printing or
         /// structured formatting scenarios.</remarks>
-        private readonly string _indentChars = indentChars ?? throw new ArgumentNullException(nameof(indentChars));
+        private readonly string _indentChars = "    ";
 
         /// <summary>
         /// Represents the internal buffer used to accumulate or manipulate string data for this instance.
@@ -190,5 +243,10 @@ namespace PSAppDeployToolkit.CodeGen
         /// <remarks>This field is intended for internal use and is not exposed to consumers of the class.
         /// Its contents may change as operations are performed.</remarks>
         private readonly StringBuilder _buffer = new();
+
+        /// <summary>
+        /// Saves <see cref="_propertyWritten"/> state when entering nested hashtables.
+        /// </summary>
+        private readonly Stack<bool> _propertyWrittenStack = new();
     }
 }
